@@ -1,14 +1,21 @@
 ﻿namespace BestPractices.Classes
 {
-    public class ThreadPoolDemo
+    public class ThreadPoolDemo : IDemo
     {
+        public string Description => "ThreadPool Demo ( ExecuteThreadPoolTasks )";
+
+        public void Execute()
+        {
+            ExecuteThreadPoolTasks();
+        }
+
         /* The thread pool in C# is a pool of worker threads maintained by the .NET runtime.
          * These threads are used to perform tasks in the background, 
          * which helps improve application performance by reusing existing threads rather than creating new ones each time a task needs to be executed. 
          * This reuse reduces the overhead associated with thread creation and destruction.
          */
 
-        public static void ExecuteThreadPoolTasks()
+        private static void ExecuteThreadPoolTasks()
         {
             // Queue multiple tasks to the thread pool
             for (int i = 0; i < 10; i++)

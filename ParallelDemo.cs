@@ -2,8 +2,15 @@
 
 namespace BestPractices.Classes
 {
-    public class ParallelDemo
+    public class ParallelDemo : IDemo
     {
+        public string Description => "Parallel Programming Demo ( ExecuteParallelSum )";
+
+        public void Execute()
+        {
+            ExecuteParallelSum();
+        }
+
         [DllImport("kernel32.dll")]
         private static extern nint GetCurrentThread();
 
@@ -23,7 +30,7 @@ namespace BestPractices.Classes
          * This can significantly speed up computation-heavy operations by taking advantage of multi-core processors.
          */
 
-        public static void ExecuteParallelSum()
+        private static void ExecuteParallelSum()
         {
             int[] numbers = new int[10];
 
