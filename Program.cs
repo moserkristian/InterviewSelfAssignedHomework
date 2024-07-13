@@ -6,37 +6,42 @@ namespace BestPractices
     {
         static void Main(string[] args)
         {
+            List<IDemo> demos = new List<IDemo>
+            {
+                new ParallelDemo(),
+                new SpanDemo(),
+                new ThreadPoolDemo(),
+                new Inheritance()
+                // Add new demos here
+            };
+
             while (true)
             {
                 Console.WriteLine("Please select a method to execute:");
-                Console.WriteLine("1, Parallel Programming Demo ( ExecuteParallelSum )");
-                Console.WriteLine("2, Span Usage Demo ( DemonstrateSpanUsage )");
-                Console.WriteLine("3, ThreadPool Demo ( ExecuteThreadPoolTasks )");
-
+                for (int i = 0; i < demos.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}, {demos[i].Description}");
+                }
                 Console.WriteLine("0, Exit");
-                Console.Write("Enter your choice as number (1) : ");
+                Console.Write("Enter your choice as number (1): ");
 
                 // Read user input
                 string input = Console.ReadLine();
                 if (int.TryParse(input, out int choice))
                 {
-                    switch (choice)
+                    if (choice == 0)
                     {
-                        case 0:
-                            Console.WriteLine("Exiting...");
-                            return;
-                        case 1:
-                            ParallelDemo.ExecuteParallelSum();
-                            break;
-                        case 2:
-                            SpanDemo.DemonstrateSpanUsage();
-                            break;
-                        case 3:
-                            ThreadPoolDemo.ExecuteThreadPoolTasks();
-                            break;
-                        default:
-                            Console.WriteLine("Invalid choice. Please try again.");
-                            break;
+                        Console.WriteLine("Exiting...");
+                        return;
+                    }
+
+                    if (choice > 0 && choice <= demos.Count)
+                    {
+                        demos[choice - 1].Execute();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid choice. Please try again.");
                     }
                 }
                 else
