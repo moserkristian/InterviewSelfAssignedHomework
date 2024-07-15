@@ -1,4 +1,6 @@
-﻿namespace BestPractices.Classes
+﻿using System.Runtime.InteropServices;
+
+namespace BestPractices.Classes
 {
     public class ThreadPoolDemo : IDemo
     {
@@ -7,6 +9,20 @@
         public void Execute()
         {
             ExecuteThreadPoolTasks();
+        }
+
+        [DllImport("kernel32.dll")]
+        private static extern nint GetCurrentThread();
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern int GetThreadIdealProcessorEx(nint hThread, ref PROCESSOR_NUMBER lpIdealProcessor);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct PROCESSOR_NUMBER
+        {
+            public ushort Group;
+            public byte Number;
+            public byte Reserved;
         }
 
         /* The thread pool in C# is a pool of worker threads maintained by the .NET runtime.
@@ -35,12 +51,21 @@
             if (state == null) throw new NullReferenceException();
 
             int taskNumber = (int)state;
-            Console.WriteLine($"Task {taskNumber} is starting on thread {Thread.CurrentThread.ManagedThreadId}.");
+
+            WriteWorkingStatus(taskNumber, "starting");
 
             // Simulate some work with a delay
             Thread.Sleep(1000);
 
-            Console.WriteLine($"Task {taskNumber} is completed on thread {Thread.CurrentThread.ManagedThreadId}.");
+            WriteWorkingStatus(taskNumber, "completed");
+        }
+
+        private static void WriteWorkingStatus(int taskNumber, string status)
+        {
+            PROCESSOR_NUMBER procNumber = new PROCESSOR_NUMBER();
+            nint threadHandle = GetCurrentThread();
+            GetThreadIdealProcessorEx(threadHandle, ref procNumber);
+            Console.WriteLine($"Task {taskNumber} is {status} on thread {Thread.CurrentThread.ManagedThreadId} | isThreadPoolThread: {Thread.CurrentThread.IsThreadPoolThread} | CPU core {procNumber.Number}.");
         }
     }
 }
